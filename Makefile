@@ -27,6 +27,24 @@
 #       instances of "$" within them need to be escaped with a second "$" to
 #       accomodate the double expansion that occurs when eval is invoked.
 
+# ADD_GOAL_RULE - Parameterized "function" that adds a new goal (a phony
+#   target) to the Makefile. This function will not add any prerequisites to
+#   the goal. ADD_TARGET_RULE will add targets as prerequisites to the goals
+#   specified in TGT_GOALS.
+#
+#   USE WITH EVAL
+#
+define ADD_GOAL_RULE
+    ifeq "$$(strip ${1})" "all"
+        $$(error Illegal to use goal "all" in TGT_GOALS)
+    endif
+    ifeq "$$(strip ${1})" "clean"
+        $$(error Illegal to use goal "clean" in TGT_GOALS)
+    endif
+    .PHONY: ${1}
+    ${1}:
+endef
+
 # ADD_CLEAN_RULE - Parameterized "function" that adds a new rule and phony
 #   target for cleaning the specified target (removing its build-generated
 #   files).
@@ -93,6 +111,11 @@ define ADD_TARGET_RULE
 	        $${${1}_OBJS} $${LDLIBS} $${${1}_LDLIBS})
 	    $${${1}_POSTMAKE}
     endif
+
+    # Add the target to each goal in TGT_GOALS.
+    $$(foreach GOAL,$$(sort $${${1}_GOALS}),\
+        $$(eval $${GOAL}: $${TARGET_DIR}/${1}))
+
 endef
 
 # CANONICAL_PATH - Given one or more paths, converts the paths to the canonical
@@ -139,6 +162,7 @@ define INCLUDE_SUBMAKEFILE
     # Initialize all variables that can be defined by a makefile fragment, then
     # include the specified makefile fragment.
     TARGET        :=
+    TGT_GOALS     :=
     TGT_CC        :=
     TGT_CFLAGS    :=
     TGT_CXX       :=
@@ -187,6 +211,9 @@ define INCLUDE_SUBMAKEFILE
         # makefile apply to this new target. Initialize the target's variables.
         TGT := $$(strip $${TARGET})
         ALL_TGTS += $${TGT}
+        TGT_GOALS := $$(strip $${TGT_GOALS})
+        ALL_GOALS += $${TGT_GOALS}
+        $${TGT}_GOALS     := $${TGT_GOALS}
         $${TGT}_CC        := $${TGT_CC}
         $${TGT}_CFLAGS    := $${TGT_CFLAGS}
         $${TGT}_CXX       := $${TGT_CXX}
@@ -337,6 +364,7 @@ ALL_SRC_EXTS := ${C_SRC_EXTS} ${CXX_SRC_EXTS}
 
 # Initialize global variables.
 ALL_TGTS :=
+ALL_GOALS :=
 DEFS :=
 DIR_STACK :=
 INCDIRS :=
@@ -354,6 +382,10 @@ INCDIRS := $(addprefix -I,$(call CANONICAL_PATH,${INCDIRS}))
 # default goal.
 .PHONY: all
 all: $(addprefix ${TARGET_DIR}/,${ALL_TGTS})
+
+# Add a new goal rule for each user-defined goal.
+$(foreach GOAL,$(sort ${ALL_GOALS}),\
+  $(eval $(call ADD_GOAL_RULE,${GOAL})))
 
 # Add a new target rule for each user-defined target.
 $(foreach TGT,${ALL_TGTS},\

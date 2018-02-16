@@ -232,3 +232,13 @@ TGT_PREREQS
    executable target may depend on one or more static library targets defined
    elsewhere. This variable can be used to tell boilermake that the executable
    depends on those libraries.
+
+TGT_GOALS
+---------
+   Can be used to associate a target with custom goals that can be executed
+   from command line. For example, all targets that are part of goal "test"
+   would be built when running command "make test". If TGT_GOALS is omitted
+   for a target, then the target will not be part of any custom goal. All
+   targets are part of the default goal 'all'. Goals 'all' and 'clean' are
+   reserved and may not be used in TGT_GOALS.
+
