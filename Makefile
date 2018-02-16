@@ -34,9 +34,9 @@
 #   USE WITH EVAL
 #
 define ADD_CLEAN_RULE
-    clean: clean_${1}
-    .PHONY: clean_${1}
-    clean_${1}:
+    clean: clean_$${TARGET_DIR}/${1}
+    .PHONY: clean_$${TARGET_DIR}/${1}
+    clean_$${TARGET_DIR}/${1}:
 	$$(strip rm -f ${TARGET_DIR}/${1} $${${1}_OBJS:%.o=%.[doP]})
 	$${${1}_POSTCLEAN}
 endef
