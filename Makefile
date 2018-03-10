@@ -407,6 +407,9 @@ $(foreach TGT,${ALL_TGTS},\
 
 # Add "clean" rules to remove all build-generated files.
 .PHONY: clean
+clean:
+	${POSTCLEAN}
+
 $(foreach TGT,${ALL_TGTS},\
   $(eval $(call ADD_CLEAN_RULE,${TGT})))
 
