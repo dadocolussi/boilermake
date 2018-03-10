@@ -195,12 +195,12 @@ define INCLUDE_SUBMAKEFILE
     # Initialize internal local variables.
     OBJS :=
 
-    # Ensure that valid values are set for BUILD_DIR and TARGET_DIR.
+    # Verify that valid values are set for BUILD_DIR and TARGET_DIR.
     ifeq "$$(strip $${BUILD_DIR})" ""
-        BUILD_DIR := build
+        $$(error Invalid BUILD_DIR)
     endif
     ifeq "$$(strip $${TARGET_DIR})" ""
-        TARGET_DIR := .
+        $$(error Invalid TARGET_DIR)
     endif
 
     # Determine which target this makefile's variables apply to. A stack is
@@ -369,6 +369,8 @@ DEFS :=
 DIR_STACK :=
 INCDIRS :=
 TGT_STACK :=
+BUILD_DIR := build
+TARGET_DIR := targets
 
 # Include the main user-supplied submakefile. This also recursively includes
 # all other user-supplied submakefiles.

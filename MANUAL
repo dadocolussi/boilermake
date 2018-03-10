@@ -145,7 +145,7 @@ TARGET_DIR
 
    Like BUILD_DIR, it is advised to set this variable only once.
 
-   Default value: . (make's working directory; aka project root)
+   Default value: targets (relative to project root)
 
 TGT_CC
 ------
