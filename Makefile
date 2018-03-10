@@ -245,7 +245,7 @@ define INCLUDE_SUBMAKEFILE
         $${TGT}_LDLIBS    += $${TGT_LDLIBS}
         $${TGT}_POSTCLEAN += $${TGT_POSTCLEAN}
         $${TGT}_POSTMAKE  += $${TGT_POSTMAKE}
-        $${TGT}_PREREQS   += $${TGT_PREREQS}
+        $${TGT}_PREREQS   += $$(addprefix $${TARGET_DIR}/,$${TGT_PREREQS})
     endif
 
     # Push the current target onto the target stack.
