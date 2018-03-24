@@ -155,7 +155,7 @@ POSTCLEAN
    in the commands).
 
    Example in main.mk:
-   POSTMAKE := rm -rf ${BUILD_DIR} ${TARGET_DIR}
+   POSTCLEAN := rm -rf ${BUILD_DIR} ${TARGET_DIR}
 
    See TGT_POSTMAKE below for more related information.
 
