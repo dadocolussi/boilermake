@@ -357,6 +357,12 @@ ifneq "${MIN_MAKE_VERSION}" "$(call MIN,${MIN_MAKE_VERSION},${MAKE_VERSION})"
     $(error ${MIN_MAKE_VER_MSG})
 endif
 
+ifeq ($(shell uname -s), Darwin)
+  DYLIB_EXT := dylib
+else
+  DYLIB_EXT := so
+endif
+
 # Define the source file extensions that we know how to handle.
 C_SRC_EXTS := %.c
 CXX_SRC_EXTS := %.C %.cc %.cp %.cpp %.CPP %.cxx %.c++
